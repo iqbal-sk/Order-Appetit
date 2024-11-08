@@ -1,0 +1,1 @@
+{"collection_name": "locations", "fields": {"_id": ["ObjectId"], "tax_percentage": ["float"], "isDefault": ["bool"], "shipday_key": ["str"], "background_name": ["str"], "name": ["str"], "polygons": ["dict"], "polygons.type": ["str"], "polygons.coordinates": ["list"], "polygons.coordinates[]": ["list"], "createdAt": ["datetime"], "updatedAt": ["datetime"], "__v": ["int"]}}

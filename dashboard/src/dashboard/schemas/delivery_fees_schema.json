@@ -1,0 +1,1 @@
+{"collection_name": "delivery_fees", "fields": {"_id": ["ObjectId"], "min": ["int"], "max": ["int"], "fee": ["float"]}}

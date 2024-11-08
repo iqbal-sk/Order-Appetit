@@ -1,0 +1,1 @@
+{"collection_name": "categories", "fields": {"_id": ["ObjectId"], "name": ["str"], "type": ["str"], "createdAt": ["datetime"], "updatedAt": ["datetime"], "__v": ["int"], "image": ["dict"], "image.uid": ["str"], "image.name": ["str"], "image.status": ["str"], "image.filename": ["str"], "image.url": ["str"], "image.size": ["int"], "image.type": ["str"]}}

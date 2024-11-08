@@ -1,0 +1,133 @@
+schema_analysis_task:
+  description: >
+    **Task Description:**
+    Analyze the MongoDB collections of the 'Order Appetit' application to identify relevant document patterns for the following user query:
+
+    "{user_query}"
+
+    **Context:**
+    - 'Order Appetit' is a local food delivery app in Buffalo.
+    - The associated database is named '{database_name}'.
+    - Important collections to consider are:
+      {collection_names}
+
+    **Instructions:**
+    - **MongoDB URI**: Use {mongodb_uri} to connect to the database.
+    - **Database Name**: Use {database_name}.
+    - **Collection Names**: The collections to analyze are:
+      {collection_names}
+    - **Schema Analysis**: Use the necessary tools to read schema for desired collections.
+    - **Handle Semantically Similar Values**: Account for variations in product names like 'Mac and Cheese', 'Mac & Cheese', 'Mac n cheese'.
+
+    **Objective:**
+    - Connect to the MongoDB database using the provided URI.
+    - Perform schema analysis on relevant collections.
+    - Map components of the user query to appropriate collections and fields.
+    - Generate MongoDB queries or aggregation pipelines to retrieve the necessary data to analyze schema.
+    - Provide a detailed explanation of how the user query maps to the database schema.
+
+    **Additional Information:**
+    - Be thorough and detail-oriented in your analysis.
+    - Document each step clearly to ensure transparency.
+  expected_output: >
+    - A dictionary mapping query components to collection structures, including handling of similar values.
+    - Detailed explanations and any assumptions made during the analysis.
+  agent: schema_analyzer
+
+query_building_task:
+  description: >
+    **Task Description:**
+    Generate an optimized MongoDB aggregation pipeline or query based on the schema analysis results for the following user query:
+
+    "{user_query}"
+
+    **Context:**
+    - **Schema Analysis Output**: Use the mappings and insights from the schema analysis task.
+    - **MongoDB URI**: Use this URI: {mongodb_uri} to connect to the MongoDB database.
+    - **Database Name**: Use this database name: {database_name}
+    - **Collections**: {collection_names}
+
+    **Instructions:**
+    1. **Review Schema Analysis**:
+       - Examine the schema_analysis_output to understand how the user query components map to the database schema.
+       - Pay special attention to the fields and collections identified.
+
+    2. **Query Optimization**:
+       - Use MongoDB best practices to optimize the query.
+       - Consider indexes, aggregation framework capabilities, and query operators.
+       - Ensure the query is efficient and performs well on large datasets.
+
+    3. **Handle Semantically Similar Values**:
+       - Implement regex patterns or other techniques to account for variations in product names (e.g., 'Mac and Cheese', 'Mac & Cheese', 'Mac n cheese').
+
+    4. **Code Execution**:
+       - Write executable Python code using PyMongo to connect to the database and run the query.
+       - Ensure the code is syntactically correct and follows best practices.
+
+    5. **Documentation**:
+       - Provide detailed explanations of your query logic and optimization strategies.
+       - Document any assumptions or considerations made during query construction.
+
+    **Objective:**
+    - Generate an executable, optimized MongoDB query or aggregation pipeline that retrieves the required data for the user query.
+    - Ensure the query accounts for schema structures and data variations.
+    - Provide code that can be directly executed to obtain the results.
+
+  expected_output: >
+    - **Python Code**: Executable code that connects to MongoDB and runs the optimized query.
+    - **Aggregation Pipeline or Query**: The actual MongoDB query or pipeline used.
+    - **Explanations**: Comprehensive explanations of query construction and optimization.
+  agent: query_builder
+  context:
+    - schema_analysis_task
+
+data_analysis_task:
+  description: >
+    **Task Description:**
+    Analyze MongoDB query results to generate meaningful business insights for the following user query:
+
+    "{user_query}"
+
+    **Context:**
+    - **User Query**: {user_query}
+    - **MongoDB URI**: Use this URI {mongodb_uri} to connect to the MongoDB database.
+    - **Database Name**: Use this database name: {database_name}
+    - **Schema Analysis Output**: Use mappings and insights from the schema analysis task.
+    - **Query Building Output**: Consider any assumptions and logic from the query construction.
+
+    **Instructions:**
+    1. **Execute Query**"
+      - Execute the query returned from query construction 
+    
+    2. **Review Query Results**:
+       - Examine the data returned by the MongoDB query.
+       - Understand the key metrics and figures presented.
+
+    3. **Data Analysis**:
+       - Interpret the data to identify trends, patterns, and anomalies.
+       - Calculate relevant statistics or KPIs (e.g., total sales, average order value).
+
+    4. **Generate Insights**:
+       - Derive meaningful business insights from the data analysis.
+       - Provide actionable recommendations or conclusions based on the findings.
+
+    5. **Visualization (Optional)**:
+       - If applicable, suggest ways to visualize the data (e.g., charts, graphs) to enhance understanding.
+
+    6. **Documentation**:
+       - Provide detailed explanations of your analysis process.
+       - Document any assumptions or considerations made during the analysis.
+
+    **Objective:**
+    - Analyze the query results to extract valuable business insights related to the user's query.
+    - Present findings in a clear, concise, and actionable manner.
+    - Ensure that the insights align with the business context of 'Order Appetit'.
+
+  expected_output: >
+    - **Dictionary of Analysis Results**: Key metrics and figures derived from the data.
+    - **Detailed Insights**: Explanations of what the data indicates about 'Mac n Cheese' sales in the previous month.
+    - **Business Recommendations**: Suggestions for improving sales, marketing strategies, or operational efficiencies.
+  agent: data_analyst
+  context:
+    - query_building_task
+    - schema_analysis_task

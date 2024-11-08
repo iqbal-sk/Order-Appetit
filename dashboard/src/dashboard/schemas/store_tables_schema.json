@@ -1,0 +1,1 @@
+{"collection_name": "store_tables", "fields": {"_id": ["ObjectId"], "store": ["ObjectId"], "table_no": ["int"], "guest_capacity_count": ["int"], "createdAt": ["datetime"], "updatedAt": ["datetime"], "__v": ["int"]}}
