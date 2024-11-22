@@ -1,0 +1,12 @@
+schema_paths:
+  categories: schemas/categories_schema.json
+  delivery_fees: schemas/delivery_fees_schema.json
+  locations: schemas/locations_schema.json
+  merchant_logs: schemas/merchant_logs_schema.json
+  merchant_settings: schemas/merchant_settings_schema.json
+  orders: schemas/optimized_orders_schema.json
+  products: schemas/optimized_products_schema.json
+  stores: schemas/optimized_stores_schema.json
+  users: schemas/optimized_users_schema.json
+  product_categories: schemas/product_categories_schema.json
+  store_tables: schemas/store_tables_schema.json
