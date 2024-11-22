@@ -1,14 +1,14 @@
 from crewai_tools import tool
 from langchain_experimental.utilities import PythonREPL
 import json
-from typing import Optional
+from typing import Optional,Dict
 
 
 @tool("Python Code Executor")
 def execute_python_code(
         code: str,
-        context: Optional[dict] = None
-) -> str:
+        # context: Optional[dict] = None
+) -> Dict[str, str]:
     """
     Executes Python code in a controlled REPL environment and returns the output.
 
@@ -24,15 +24,15 @@ def execute_python_code(
         repl = PythonREPL()
 
         # If context is provided, prepare it as variable declarations
-        context_setup = ""
-        if context:
-            context_setup = "\n".join([
-                f"{key} = {repr(value)}"
-                for key, value in context.items()
-            ]) + "\n"
+        # context_setup = ""
+        # if context:
+        #     context_setup = "\n".join([
+        #         f"{key} = {repr(value)}"
+        #         for key, value in context.items()
+        #     ]) + "\n"
 
         # Combine context and code
-        full_code = context_setup + code
+        full_code = code #context_setup + code
 
         # Execute the code
         result = repl.run(full_code)
@@ -46,6 +46,6 @@ def execute_python_code(
     except Exception as e:
         return {
             "status": "error",
-            "error": str(e),
+            "error": f'Execution error:{str(e)}',
             "type": "code_execution"
         }

@@ -5,6 +5,7 @@ schema_analysis_task:
 
     "{user_query}"
 
+
     **Context:**
     - 'Order Appetit' is a local food delivery app in Buffalo.
     - The associated database is named '{database_name}'.
@@ -15,38 +16,38 @@ schema_analysis_task:
     **Instructions:**
     1. **Identify Relevant Collections and Fields**:
        - From the provided list, determine which collections and fields are necessary to answer the user query.
-       - Focus on collections related to Restaurants, Orders, and Users as per the metrics provided.
        - Justify your selection based on their relevance to the query components.
-
+       
     2. **Connect to MongoDB**:
        - Use the provided MongoDB URI and database name to establish a connection.
 
     3. **Perform Schema Analysis**:
        - Analyze the schemas of the relevant collections to understand the structure and data types.
-       - Pay special attention to fields that store product names, ensuring you note any inconsistencies or variations in naming.
-       - Identify patterns or common variations in product names that may affect data retrieval.
+       - Focus on fields that store product names, restaurant names, user names, and quantity (`qty`) fields.
 
     4. **Map Query Components**:
        - Break down the user query into key components (e.g., time frame, product name).
        - Map each component to the corresponding collections and fields, emphasizing names over IDs.
-       - Document any naming inconsistencies found and how they relate to the query components.
-
+       
     5. **Handle Naming Inconsistencies**:
-       - Develop strategies to handle variations in product names (e.g., 'Mac and Cheese', 'Mac & Cheese', 'Mac n cheese').
-       - Suggest methods such as creating a standardized mapping, using regex patterns, or implementing fuzzy matching techniques.
-       - Ensure that all variations of product names are accounted for in the analysis.
+       - When processing a user query, check if it contains any food item names.
+       - If a food item name is found, use "Food Items Finder" tool to identify naming inconsistencies for given food item.
+       - Use the output of "Food Items Finder" tool to analyze list of names semantically exactly equivalent to given food item in "{user_query}".
+    
 
     6. **Document Findings**:
-       - Provide a detailed mapping of query components to collections and fields, including strategies for handling naming inconsistencies.
+       - Provide a detailed mapping of query components to collections and fields, emphasizing the importance of using names over IDs.
+       - Include all naming variations for food items, ensuring comprehensive results.
        - Include any assumptions or considerations made during the analysis.
 
     **Objective:**
     - Identify the necessary collections and fields to address the user query, focusing on the specified metrics.
-    - Account for naming inconsistencies to ensure all relevant records are included in the analysis.
+    - Provide all naming variations for the queried food item.
     - Prepare a schema mapping that will be used to construct consistent and comprehensive queries.
 
   expected_output: >
     - A list of relevant collections and fields necessary to answer the user query, with justifications.
+    - If query is about food item, provide other names to lookout while writing queries for  food item in "{user_query}"
     - A detailed mapping of query components to collections and fields, including strategies for handling naming inconsistencies.
     - Explanations and any assumptions made during the analysis.
 
@@ -56,7 +57,7 @@ schema_analysis_task:
 
 query_building_task:
   description: >
-    Based on the schema mapping from the `schema_analysis_task`, generate an optimized MongoDB aggregation pipeline or query that consistently provides both sales count/volume and sales value in dollars, and uses names instead of IDs, for the following user query:
+    Based on the schema mapping from the `schema_analysis_task`, generate an optimized MongoDB aggregation pipeline or query that consistently provides both total sales count (by summing up `qty` in each order) and sales value in dollars, and uses names instead of IDs, for the following user query:
 
     "{user_query}"
 
@@ -67,42 +68,49 @@ query_building_task:
     - **Collections**: {collection_names}
 
     **Instructions:**
-    1. **Review Schema Mapping**:
-       - Examine the mapping to understand the necessary collections and fields, focusing on names and monetary values.
-       - Pay special attention to the strategies for handling naming inconsistencies.
+    1. **Incorporate Naming Variations**:
+           - Use the naming variations provided in the schema analysis output to handle inconsistencies in product names.
+           - Ensure the query groups results by `details.name` and matches any variations identified during the analysis.
 
-    2. **Construct the Query**:
+        2. **Review Schema Mapping**:
+           - Focus on the necessary collections and fields, including names, monetary values, and quantities (`qty`).
+           - Use the `details.name` and `details.total_amount` fields to perform the aggregations.
+    
+    3. **Construct the Query**:
        - Use the mapping to build a MongoDB query or aggregation pipeline that retrieves the required data.
-       - Implement the strategies for handling naming inconsistencies (e.g., using regex patterns).
-       - Ensure the query returns both sales count/volume and sales value in dollars.
+       - Implement the strategies for handling naming inconsistencies (e.g., using only the names identified by the `schema_analysis_task`).
+       - Ensure the query calculates:
+         - **Total Sales Count**: Sum of the `qty` field across relevant orders.
+         - **Sales Value in Dollars**: Aggregation of the price fields.
        - Include names (e.g., product names, restaurant names) in the results instead of IDs.
 
-    3. **Optimize the Query**:
-       - Apply best practices for query optimization.
-       - Ensure the query performs efficiently on large datasets, even when using regex or text search.
+    4. **Optimize the Query**:
+       - Apply best practices for query optimization to handle large datasets.
+       - Ensure efficient grouping and summing for each product name.
+    
+    5. **Handle Data Consistency**:
+       - Ensure consistent and granular outputs for each product name by incorporating all naming variations.
+    
+    6. **Provide Executable Code**:
+       - Write clean, executable Python code using PyMongo to connect to MongoDB and execute the query.
+       - Include all `mac_n_cheese_variations` explicitly in the code.
+       - The code must return a JSON object with **sales count and sales value for each item (name)**.
+       - Follow best coding practices, include comments, and structure the code for clarity.
 
-    4. **Handle Data Consistency**:
-       - Implement techniques to handle data variations and ensure consistent output formats.
-       - If you are using regular expression, utilize this format -> r"<expression>", for regular expression to write code.
-
-    5. **Provide Executable Code**:
-       - Write clean, executable Python code using PyMongo to connect to the database and execute the query.
-       - Please use print statements to print results as a JSON object.
-       - Include comments and follow best coding practices.
-
-    6. **Document the Query Logic**:
-       - Explain how the query addresses the user query, focusing on handling naming inconsistencies.
-       - Include any assumptions or considerations made.
-
+    7. **Document the Query Logic**:
+       - Explain how the query addresses the user query by handling naming inconsistencies and grouping data for each product.
+       - Include any assumptions or considerations made during the query's construction.
+    
+    
     **Objective:**
     - Produce an optimized MongoDB query that accounts for naming inconsistencies, ensuring all relevant records are included.
     - Provide code that returns results as a JSON object for consistent and comprehensive analysis.
 
   expected_output: >
-    You MUST Return a JSON object containing the following fields 
+    You MUST Return a JSON object containing the following fields:
     - python_code: Executable code that connects to MongoDB and runs the optimized query, returning results as a JSON object.
-    - query_output_structure: Description of the expected output format, including fields and data types.
-    - query_explanation: Detailed explanations of the query logic, ensuring consistency and use of names.
+    - query_output_structure: Description of the expected output format, including fields and data types, ensuring granularity (per item).
+    - query_explanation: Detailed explanation of the query logic, including how it groups data and calculates total sales count and sales value for each product name.
 
   agent: query_builder
   context:
@@ -110,7 +118,7 @@ query_building_task:
 
 data_analysis_task:
   description: >
-    Execute the MongoDB query generated in the `query_building_task` and analyze the results to generate meaningful business insights, ensuring consistency and use of names instead of IDs, for the following user query:
+    Execute the MongoDB query generated in the `query_building_task` and present the output in a granular and tabular format, ensuring consistency and use of names instead of IDs, for the following user query:
 
     "{user_query}"
 
@@ -121,53 +129,33 @@ data_analysis_task:
     - **Query Code**: Use the Python code from the `query_building_task`.
     - **Schema Mapping**: Refer to outputs from the `schema_analysis_task`.
 
+    **Objective:**
+    - Execute the MongoDB query and return the results in a detailed, granular, and tabular format.
+    - Ensure all relevant records are included, using names instead of IDs.
+
     **Instructions:**
     1. **Execute the Query**:
-       - Properly format this Python code for query.
-       - Properly pass the arguments to Code Execution Tool available.
-       - Run the provided Python code to retrieve the data.
-       - Ensure the data includes all variations of product names as per the handling strategy.
-       - Capture the JSON output from the query.
+       - Format the provided Python code correctly.
+       - Pass any necessary arguments to the Code Execution Tool.
+       - Run the Python code to execute the query and capture the JSON output.
 
     2. **Parse JSON Results**:
-       - Load the JSON data into a Python dictionary or appropriate data structure.
-       - Verify the integrity and completeness of the data.
+       - Load the JSON output into a structured format (e.g., a pandas DataFrame).
+       - Verify the data for completeness and correctness.
 
-    3. **Review Query Results**:
-       - Examine the data for completeness and consistency.
-       - Confirm that all relevant product name variations are included and consolidated if necessary.
+    3. **Format the Results**:
+       - Present the output in a granular tabular format.
+       - Ensure the table includes all necessary fields (e.g., names, quantities, sales values) with clear column labels.
+       - Maintain consistency in naming conventions as per the schema mapping.
 
-    4. **Consolidate Product Names**:
-       - If necessary, consolidate variations of product names under a standardized name for analysis.
-       - Sum quantities and sales values accordingly.
-
-    5. **Data Analysis**:
-       - Analyze the data to identify trends, patterns, and insights related to the specified metrics for Restaurants, Orders, and Users.
-       - Calculate relevant statistics or KPIs (e.g., total sales, average order value).
-
-    6. **Generate Insights**:
-       - Provide meaningful business insights based on the analysis.
-       - Ensure that insights are consistent and align with business objectives.
-
-    7. **Provide Recommendations**:
-       - Offer actionable suggestions based on the findings.
-       - Focus on areas like improving slow times, addressing underperforming restaurants, and enhancing user engagement.
-
-    8. **Document Your Analysis**:
-       - Explain your analysis process, including how naming inconsistencies were handled.
-       - Note any assumptions or limitations encountered.
-
-    **Objective:**
-    - Analyze the query results to extract valuable insights, ensuring that all relevant records are included despite naming inconsistencies.
-    - Present findings clearly, including both volume and sales value, and provide actionable recommendations.
-    - After execution of query, utilize the output to do further analysis
-    - Feel free to plot the results, utilize the code executor to generate plots and save them on harddisk.
-    
+    4. **Output Presentation**:
+       - Display the tabular results clearly, ensuring they are sorted appropriately if needed.
+       - Avoid any additional analysis or interpretation—focus solely on presenting the data.
 
   expected_output: >
-    - **Analysis Results**: Key metrics and figures, including both volume and sales value, with consolidated product names.
-    - **Insights**: Detailed explanations of what the data indicates.
-    - **Recommendations**: Actionable suggestions for business improvements.
+    - A detailed, granular table of query results with fields like names, quantities, and sales values.
+    - Results must use names (not IDs) and align with schema mapping outputs.
+    - Include clear column headers and consistent formatting.
 
   agent: data_analyst
   context:
