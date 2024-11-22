@@ -28,7 +28,7 @@ openai_key = os.getenv("OPENAI_API_KEY")
 class CustomJSONEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, (Agent, Task, Crew, Process)):
-            return str(obj)  # Convert crewai objects to string
+            return str(obj)
         return super().default(obj)
 
 # Initialize LLM
