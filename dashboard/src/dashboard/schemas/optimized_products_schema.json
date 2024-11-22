@@ -1,0 +1,35 @@
+{
+    "collection_name": "products",
+    "fields": {
+
+        "_id": ["ObjectId"],
+        "name": ["str"],
+        "description": ["str"],
+        "price": ["float", "int"],
+        "store": ["ObjectId"],
+        "category_id": ["ObjectId"],
+
+
+        "is_active": ["bool"],
+        "is_featured": ["bool"],
+
+
+        "createdAt": ["datetime"],
+        "updatedAt": ["datetime"],
+
+
+        "sku_code": ["NoneType"],
+        "item_id": ["str"],
+
+        "customization": ["list"],
+        "customization[]._id": ["ObjectId"],
+        "customization[].custom_name": ["str"],
+        "customization[].options": ["list"],
+        "customization[].options[]._id": ["ObjectId"],
+        "customization[].options[].option_name": ["str"],
+        "customization[].options[].price": ["int", "float"],
+
+        "images": ["list"],
+        "images[].url": ["str"]
+    }
+}

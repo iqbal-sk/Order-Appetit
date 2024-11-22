@@ -1,0 +1,32 @@
+{
+    "collection_name": "orders",
+    "fields": {
+        "createdAt": ["datetime"],
+        "store_id": ["ObjectId"],
+        "user_id": ["ObjectId"],
+
+        "zip_code": ["str", "NoneType"],
+        "city": ["str", "NoneType"],
+        "state": ["str", "NoneType"],
+
+        "status": ["str"],
+        "delivery_status": ["str"],
+
+        "preparation_time": ["int"],
+        "delivery_duration": ["int", "float"],
+        "preparation_date": ["datetime"],
+
+        "raw_sub_total_amount": ["int", "float"],
+        "total_amount": ["float"],
+        "total_discount": ["int", "float"],
+        "delivery_fee": ["int", "float"],
+        "tip_amount": ["int", "float"],
+        "service_fee": ["int"],
+
+        "details": ["list"],
+        "details[].price": ["float", "int"],
+        "details[].qty": ["int"],
+        "details[].name": ["str"],
+        "details[].product_id": ["ObjectId"]
+    }
+}

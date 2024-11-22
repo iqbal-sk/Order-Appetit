@@ -1,0 +1,42 @@
+{
+    "collection_name": "stores",
+    "fields": {
+
+        "_id": ["ObjectId"],
+        "name": ["str"],
+        "description": ["str"],
+        "type": ["str"],
+        "rating": ["int"],
+        "is_featured": ["bool"],
+
+
+        "address_1": ["str"],
+        "address_2": ["str", "NoneType"],
+        "city": ["str"],
+        "state": ["str"],
+        "zip_code": ["str"],
+        "country": ["str"],
+        "geolocation": ["list"],
+        "geolocation[]": ["float"],
+
+
+        "preparation_time": ["int"],
+        "allow_asap_orders": ["bool"],
+        "reservation_fee": ["int"],
+        "operating_hours_desc": ["str"],
+        "mobile_no": ["str"],
+
+
+        "asap_schedules": ["list"],
+        "asap_schedules[]._id": ["ObjectId"],
+        "asap_schedules[].start_time": ["int", "float"],
+        "asap_schedules[].end_time": ["float", "int"],
+        "asap_schedules[].day_of_week": ["int"],
+
+
+        "last_transaction_no": ["int"],
+
+        "createdAt": ["datetime"],
+        "updatedAt": ["datetime"]
+    }
+}

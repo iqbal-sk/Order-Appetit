@@ -1,0 +1,39 @@
+{
+    "collection_name": "users",
+    "fields": {
+        "_id": ["ObjectId"],
+        "first_name": ["str"],
+        "last_name": ["str"],
+        "email": ["str"],
+        "mobile_no": ["str"],
+        "user_type": ["str"],
+
+        "createdAt": ["datetime"],
+        "updatedAt": ["datetime"],
+
+        "zip_code": ["str", "NoneType"],
+        "city": ["str", "NoneType"],
+        "state": ["str", "NoneType"],
+        "country": ["str", "NoneType"],
+        "geolocation": ["list", "NoneType"],
+        "geolocation[]": ["float"],
+
+        "is_active": ["bool"],
+        "is_email_verified": ["bool"],
+        "is_sms_verified": ["bool"],
+
+        "birthdate": ["str", "NoneType"],
+        "age": ["int", "NoneType"],
+
+        "stripe_customer_id": ["str"],
+
+        "addresses": ["list"],
+        "addresses[].zip_code": ["str"],
+        "addresses[].city": ["str"],
+        "addresses[].state": ["str"],
+        "addresses[].country": ["str", "NoneType"],
+        "addresses[].geolocation": ["list"],
+        "addresses[].geolocation[]": ["float"],
+        "addresses[].default": ["bool"]
+    }
+}
