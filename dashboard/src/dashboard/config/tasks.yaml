@@ -5,6 +5,7 @@ schema_analysis_task:
 
     "{user_query}"
 
+
     **Context:**
     - 'Order Appetit' is a local food delivery app in Buffalo.
     - The associated database is named '{database_name}'.
@@ -15,16 +16,14 @@ schema_analysis_task:
     **Instructions:**
     1. **Identify Relevant Collections and Fields**:
        - From the provided list, determine which collections and fields are necessary to answer the user query.
-       - Focus on collections related to Restaurants, Orders, and Users as per the metrics provided.
        - Justify your selection based on their relevance to the query components.
-
+       
     2. **Connect to MongoDB**:
        - Use the provided MongoDB URI and database name to establish a connection.
 
     3. **Perform Schema Analysis**:
        - Analyze the schemas of the relevant collections to understand the structure and data types.
-       - Pay special attention to fields that store product names, ensuring you note any inconsistencies or variations in naming.
-       - Identify patterns or common variations in product names that may affect data retrieval.
+       - Pay special attention to fields that store product names, restaurant names or user names.
 
     4. **Map Query Components**:
        - Break down the user query into key components (e.g., time frame, product name).
@@ -32,9 +31,9 @@ schema_analysis_task:
        - Document any naming inconsistencies found and how they relate to the query components.
 
     5. **Handle Naming Inconsistencies**:
-       - Develop strategies to handle variations in product names (e.g., 'Mac and Cheese', 'Mac & Cheese', 'Mac n cheese').
-       - Suggest methods such as creating a standardized mapping, using regex patterns, or implementing fuzzy matching techniques.
-       - Ensure that all variations of product names are accounted for in the analysis.
+       - When processing a user query, check if it contains any food item names.
+       - If a food item name is found, use "Food Items Finder" tool to identify naming inconsistencies for given food item.
+       - Use the output of "Food Items Finder" tool to analyze list of names semantically exactly equivalent to given food item in "{user_query}".
 
     6. **Document Findings**:
        - Provide a detailed mapping of query components to collections and fields, including strategies for handling naming inconsistencies.
@@ -47,6 +46,7 @@ schema_analysis_task:
 
   expected_output: >
     - A list of relevant collections and fields necessary to answer the user query, with justifications.
+    - If query is about food item, provide other names to lookout while writing queries for  food item in "{user_query}"
     - A detailed mapping of query components to collections and fields, including strategies for handling naming inconsistencies.
     - Explanations and any assumptions made during the analysis.
 
@@ -120,6 +120,12 @@ data_analysis_task:
     - **Database Name**: "{database_name}"
     - **Query Code**: Use the Python code from the `query_building_task`.
     - **Schema Mapping**: Refer to outputs from the `schema_analysis_task`.
+    
+    **Objective:**
+        - Analyze the query results to extract valuable insights, ensuring that all relevant records are included despite naming inconsistencies.
+        - Present findings clearly, including both volume and sales value.
+        - After execution of query, utilize the output to do further analysis
+        - Feel free to plot the results, utilize the code executor to generate plots and save them on harddisk.
 
     **Instructions:**
     1. **Execute the Query**:
@@ -145,29 +151,15 @@ data_analysis_task:
        - Analyze the data to identify trends, patterns, and insights related to the specified metrics for Restaurants, Orders, and Users.
        - Calculate relevant statistics or KPIs (e.g., total sales, average order value).
 
-    6. **Generate Insights**:
-       - Provide meaningful business insights based on the analysis.
-       - Ensure that insights are consistent and align with business objectives.
-
-    7. **Provide Recommendations**:
-       - Offer actionable suggestions based on the findings.
-       - Focus on areas like improving slow times, addressing underperforming restaurants, and enhancing user engagement.
-
-    8. **Document Your Analysis**:
+    6. **Document Your Analysis**:
        - Explain your analysis process, including how naming inconsistencies were handled.
        - Note any assumptions or limitations encountered.
 
-    **Objective:**
-    - Analyze the query results to extract valuable insights, ensuring that all relevant records are included despite naming inconsistencies.
-    - Present findings clearly, including both volume and sales value, and provide actionable recommendations.
-    - After execution of query, utilize the output to do further analysis
-    - Feel free to plot the results, utilize the code executor to generate plots and save them on harddisk.
-    
 
   expected_output: >
     - **Analysis Results**: Key metrics and figures, including both volume and sales value, with consolidated product names.
+    - **Give results in details(with granularity) in tabular format.
     - **Insights**: Detailed explanations of what the data indicates.
-    - **Recommendations**: Actionable suggestions for business improvements.
 
   agent: data_analyst
   context:

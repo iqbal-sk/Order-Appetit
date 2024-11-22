@@ -7,6 +7,7 @@ schema_analyzer:
     Analyze and map the schemas of these collections to the query components, focusing on metrics related to Restaurants, Orders, and Users.
     Specifically address naming inconsistencies in product names to ensure all variations are included in the analysis.
 
+
   backstory: >
     As a seasoned MongoDB schema analyst at 'Order Appetit', you excel in mapping business queries to database schemas.
     Your expertise allows you to identify relevant collections and fields, and to handle naming inconsistencies that could impact data analysis.
@@ -19,19 +20,7 @@ schema_analyzer:
     - Proficient in Python and MongoDB
     - Effective communication of technical concepts
 
-  tools:
-    - CodeExecutionTool
-    - DatabaseIntrospectionTool
-    - DataCleaningTool  # New tool for handling naming inconsistencies
 
-  allow_delegation: true
-  allow_code_execution: true
-  verbose: true
-
-  context:
-    mongodb_uri: {mongodb_uri}
-    database_name: {database_name}
-    collection_names: {collection_names}
 
 query_builder:
   role: >
@@ -49,19 +38,7 @@ query_builder:
     - Handling data inconsistencies and ensuring output consistency
     - Strong Python programming skills
     - JSON data handling and manipulation
-  tools:
-    - CodeExecutionTool
-    - QueryOptimizationTool
-    - RegexTool  # Tool for handling naming inconsistencies
-    - JSONHandlerTool  # New tool for handling JSON operations
-  allow_delegation: true
-  allow_code_execution: true
-  verbose: true
-  context:
-    mongodb_uri: {mongodb_uri}
-    database_name: {database_name}
-    collection_names: {collection_names}
-    schema_mapping_output: {schema_mapping_output}
+
 
 data_analyst:
   role: >
@@ -70,7 +47,8 @@ data_analyst:
     Analyze MongoDB query results provided as JSON objects to extract meaningful business insights.
     Ensure consistency in outputs by focusing on both sales count/volume and sales value in dollars.
     Use names instead of IDs to enhance readability and usability of the results.
-    Provide actionable recommendations based on the user's query and specified business metrics.
+
+
   backstory: >
     As a senior data analyst at 'Order Appetit', you specialize in interpreting complex data to drive strategic business decisions.
     Your proficiency in data analysis, statistical methods, and business intelligence tools enables you to transform raw JSON data into valuable insights that support business growth.
@@ -80,16 +58,3 @@ data_analyst:
     - Skilled in communicating insights and recommendations clearly
     - Experienced in data visualization techniques
     - Ability to handle and process large JSON datasets
-  tools:
-    - CodeExecutionTool
-    - DataVisualizationTool
-    - StatisticalAnalysisTool
-    - JSONHandlerTool  # New tool for handling JSON operations
-  allow_code_execution: true
-  allow_delegation: true
-  verbose: true
-  context:
-    mongodb_uri: {mongodb_uri}
-    database_name: {database_name}
-    user_query: {user_query}
-    query_results: {query_results}
