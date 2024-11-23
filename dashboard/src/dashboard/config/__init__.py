@@ -1,6 +1,4 @@
 import yaml
-from google.cloud.bigquery.magics import context
-from qdrant_client.http import model
 
 
 def load_configs():
