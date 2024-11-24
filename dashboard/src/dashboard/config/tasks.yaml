@@ -16,6 +16,7 @@ schema_analysis_task:
     **Instructions:**
     1. **Identify Relevant Collections and Fields**:
        - From the provided list, determine which collections and fields are necessary to answer the user query.
+       - Understand the query and get the relevant collections
        - Justify your selection based on their relevance to the query components.
        
     2. **Connect to MongoDB**:
@@ -30,7 +31,7 @@ schema_analysis_task:
        - Map each component to the corresponding collections and fields, emphasizing names over IDs.
        
     5. **Handle Naming Inconsistencies**:
-       - When processing a user query, check if it contains any food item names.
+       - When processing a user query, check if it contains any specific food item names. If it's not about a specific product you can skip this.
        - If a food item name is found, use "Food Items Finder" tool to identify naming inconsistencies for given food item.
        - Use the output of "Food Items Finder" tool to analyze list of names semantically exactly equivalent to given food item in "{user_query}".
     
@@ -69,20 +70,22 @@ query_building_task:
 
     **Instructions:**
     1. **Incorporate Naming Variations**:
-           - Use the naming variations provided in the schema analysis output to handle inconsistencies in product names.
-           - Ensure the query groups results by `details.name` and matches any variations identified during the analysis.
+      - Use the naming variations provided in the schema analysis output to handle inconsistencies in product names.
+      - Ensure the query groups results by `details.name` and matches any variations identified during the analysis.
 
-        2. **Review Schema Mapping**:
-           - Focus on the necessary collections and fields, including names, monetary values, and quantities (`qty`).
-           - Use the `details.name` and `details.total_amount` fields to perform the aggregations.
+    2. **Review Schema Mapping**:
+      - Focus on the necessary collections and fields, including names, monetary values, and quantities (`qty`).
+      - Use the `details.name` and `details.total_amount` fields to perform the aggregations.
     
     3. **Construct the Query**:
-       - Use the mapping to build a MongoDB query or aggregation pipeline that retrieves the required data.
-       - Implement the strategies for handling naming inconsistencies (e.g., using only the names identified by the `schema_analysis_task`).
-       - Ensure the query calculates:
-         - **Total Sales Count**: Sum of the `qty` field across relevant orders.
-         - **Sales Value in Dollars**: Aggregation of the price fields.
-       - Include names (e.g., product names, restaurant names) in the results instead of IDs.
+      - Use the mapping to build a MongoDB query or aggregation pipeline that retrieves the required data.
+      - Implement the strategies for handling naming inconsistencies (e.g., using only the names identified by the `schema_analysis_task`).
+      - If the query is related to top, least or high etc., then consider the 10 values or else consider the number which is mentioned in the query
+      - Ensure the query calculates:
+      - **Total Sales Count**: Sum of the `qty` field across relevant orders.
+      - **Sales Value in Dollars**: Aggregation of the price fields.
+      - ** Ensure the mathematical intuitions and build a pipeline  
+      - Include names (e.g., product names, restaurant names) in the results instead of IDs.
 
     4. **Optimize the Query**:
        - Apply best practices for query optimization to handle large datasets.
@@ -93,15 +96,14 @@ query_building_task:
     
     6. **Provide Executable Code**:
        - Write clean, executable Python code using PyMongo to connect to MongoDB and execute the query.
-       - Include all `mac_n_cheese_variations` explicitly in the code.
+       - Include all name variations like (`mac_n_cheese_variations`) explicitly in the code.
        - The code must return a JSON object with **sales count and sales value for each item (name)**.
        - Follow best coding practices, include comments, and structure the code for clarity.
 
     7. **Document the Query Logic**:
        - Explain how the query addresses the user query by handling naming inconsistencies and grouping data for each product.
        - Include any assumptions or considerations made during the query's construction.
-    
-    
+     
     **Objective:**
     - Produce an optimized MongoDB query that accounts for naming inconsistencies, ensuring all relevant records are included.
     - Provide code that returns results as a JSON object for consistent and comprehensive analysis.
