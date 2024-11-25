@@ -1,4 +1,8 @@
 # Tasks Definitions
+Rules:
+  -Cross check the query and make sure you understand the query.
+  -Don't make any false assumptions.
+
 schema_analysis_task:
   description: >
     Analyze the MongoDB collections of the 'Order Appetit' application to identify the necessary collections and fields required to address the following user query:
@@ -80,7 +84,8 @@ query_building_task:
     3. **Construct the Query**:
       - Use the mapping to build a MongoDB query or aggregation pipeline that retrieves the required data.
       - Implement the strategies for handling naming inconsistencies (e.g., using only the names identified by the `schema_analysis_task`).
-      - If the query is related to top, least or high etc., then consider the 10 values or else consider the number which is mentioned in the query
+      - If the query is related to top, least or high etc., then consider the 10 values or else consider the number which is mentioned in the query.
+      - Check the collection name twice and make sure to gather all the information related to the query without losing information twice.
       - Ensure the query calculates:
       - **Total Sales Count**: Sum of the `qty` field across relevant orders.
       - **Sales Value in Dollars**: Aggregation of the price fields.
