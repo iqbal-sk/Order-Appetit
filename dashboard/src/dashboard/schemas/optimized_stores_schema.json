@@ -1,0 +1,111 @@
+{
+    "collection_name": "stores",
+    "fields": {
+        "_id": {
+            "type": ["ObjectId"],
+            "description": "Unique identifier for the store"
+        },
+        "name": {
+            "type": ["str"],
+            "description": "Name of the store"
+        },
+        "description": {
+            "type": ["str"],
+            "description": "Detailed description of the store"
+        },
+        "type": {
+            "type": ["str"],
+            "description": "Type or category of the store"
+        },
+        "rating": {
+            "type": ["int"],
+            "description": "Customer rating of the store"
+        },
+        "is_featured": {
+            "type": ["bool"],
+            "description": "Flag indicating if the store is featured"
+        },
+        "address_1": {
+            "type": ["str"],
+            "description": "Primary address line of the store"
+        },
+        "city": {
+            "type": ["str"],
+            "description": "City where the store is located"
+        },
+        "state": {
+            "type": ["str"],
+            "description": "State where the store is located"
+        },
+        "zip_code": {
+            "type": ["str"],
+            "description": "Postal/ZIP code of the store location"
+        },
+        "country": {
+            "type": ["str"],
+            "description": "Country where the store is located"
+        },
+        "geolocation": {
+            "type": ["list"],
+            "description": "Geographic coordinates of the store",
+            "items": {
+                "type": ["float"],
+                "description": "Latitude and longitude values"
+            }
+        },
+        "preparation_time": {
+            "type": ["int"],
+            "description": "Average time for order preparation in minutes"
+        },
+        "allow_asap_orders": {
+            "type": ["bool"],
+            "description": "Flag indicating if the store accepts ASAP orders"
+        },
+        "reservation_fee": {
+            "type": ["int"],
+            "description": "Fee charged for reservations, if applicable"
+        },
+        "operating_hours_desc": {
+            "type": ["str"],
+            "description": "Description of store operating hours"
+        },
+        "mobile_no": {
+            "type": ["str"],
+            "description": "Contact mobile number for the store"
+        },
+        "asap_schedules": {
+            "type": ["list"],
+            "description": "List of ASAP order schedules",
+            "items": {
+                "_id": {
+                    "type": ["ObjectId"],
+                    "description": "Unique identifier for the schedule"
+                },
+                "start_time": {
+                    "type": ["int", "float"],
+                    "description": "Start time of ASAP order window"
+                },
+                "end_time": {
+                    "type": ["float", "int"],
+                    "description": "End time of ASAP order window"
+                },
+                "day_of_week": {
+                    "type": ["int"],
+                    "description": "Day of the week for this schedule (0-6, where 0 is Sunday)"
+                }
+            }
+        },
+        "last_transaction_no": {
+            "type": ["int"],
+            "description": "Number of the last transaction processed"
+        },
+        "createdAt": {
+            "type": ["datetime"],
+            "description": "Timestamp when the store was added to the system"
+        },
+        "updatedAt": {
+            "type": ["datetime"],
+            "description": "Timestamp of the last update to the store information"
+        }
+    }
+}

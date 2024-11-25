@@ -1,0 +1,103 @@
+{
+    "collection_name": "users",
+    "fields": {
+        "_id": {
+            "type": ["ObjectId"],
+            "description": "Unique identifier for the user"
+        },
+        "first_name": {
+            "type": ["str"],
+            "description": "User's first name"
+        },
+        "last_name": {
+            "type": ["str"],
+            "description": "User's last name"
+        },
+        "email": {
+            "type": ["str"],
+            "description": "User's email address"
+        },
+        "mobile_no": {
+            "type": ["str"],
+            "description": "User's mobile number"
+        },
+        "user_type": {
+            "type": ["str"],
+            "description": "Type of user account"
+        },
+        "is_active": {
+            "type": ["bool"],
+            "description": "Flag indicating if the account is active"
+        },
+        "is_email_verified": {
+            "type": ["bool"],
+            "description": "Flag indicating if email is verified"
+        },
+        "is_sms_verified": {
+            "type": ["bool"],
+            "description": "Flag indicating if mobile number is verified"
+        },
+        "birthdate": {
+            "type": ["str", "NoneType"],
+            "description": "User's date of birth, can be null"
+        },
+        "age": {
+            "type": ["int", "NoneType"],
+            "description": "User's age, can be null"
+        },
+        "geolocation": {
+            "type": ["list", "NoneType"],
+            "description": "User's current geographic coordinates",
+            "items": {
+                "type": ["float"],
+                "description": "Latitude and longitude values"
+            }
+        },
+        "addresses": {
+            "type": ["list"],
+            "description": "List of user's delivery addresses",
+            "items": {
+                "zip_code": {
+                    "type": ["str"],
+                    "description": "Postal/ZIP code of the address"
+                },
+                "city": {
+                    "type": ["str"],
+                    "description": "City name"
+                },
+                "state": {
+                    "type": ["str"],
+                    "description": "State name"
+                },
+                "country": {
+                    "type": ["str", "NoneType"],
+                    "description": "Country name, can be null"
+                },
+                "geolocation": {
+                    "type": ["list"],
+                    "description": "Geographic coordinates of the address",
+                    "items": {
+                        "type": ["float"],
+                        "description": "Latitude and longitude values"
+                    }
+                },
+                "default": {
+                    "type": ["bool"],
+                    "description": "Flag indicating if this is the default address"
+                }
+            }
+        },
+        "stripe_customer_id": {
+            "type": ["str"],
+            "description": "Stripe payment platform customer identifier"
+        },
+        "createdAt": {
+            "type": ["datetime"],
+            "description": "Timestamp when user account was created"
+        },
+        "updatedAt": {
+            "type": ["datetime"],
+            "description": "Timestamp of last update to user account"
+        }
+    }
+}

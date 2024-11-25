@@ -1,0 +1,95 @@
+{
+    "collection_name": "products",
+    "fields": {
+        "_id": {
+            "type": ["ObjectId"],
+            "description": "Unique identifier for the product document"
+        },
+        "name": {
+            "type": ["str"],
+            "description": "Name of the product as displayed to customers"
+        },
+        "description": {
+            "type": ["str"],
+            "description": "Detailed description of the product"
+        },
+        "price": {
+            "type": ["float", "int"],
+            "description": "Base price of the product before any customizations"
+        },
+        "store": {
+            "type": ["ObjectId"],
+            "description": "Reference ID to the store/restaurant that offers this product"
+        },
+        "category_id": {
+            "type": ["ObjectId"],
+            "description": "Reference ID to the product category"
+        },
+        "is_active": {
+            "type": ["bool"],
+            "description": "Flag indicating if the product is currently available for purchase"
+        },
+        "is_featured": {
+            "type": ["bool"],
+            "description": "Flag indicating if the product should be highlighted or featured"
+        },
+        "createdAt": {
+            "type": ["datetime"],
+            "description": "Timestamp when the product was first added to the system"
+        },
+        "updatedAt": {
+            "type": ["datetime"],
+            "description": "Timestamp of the last update to the product"
+        },
+        "sku_code": {
+            "type": ["NoneType"],
+            "description": "Stock Keeping Unit code, can be null"
+        },
+        "item_id": {
+            "type": ["str"],
+            "description": "Internal identifier for the product"
+        },
+        "customization": {
+            "type": ["list"],
+            "description": "Array of customization options available for this product",
+            "items": {
+                "_id": {
+                    "type": ["ObjectId"],
+                    "description": "Unique identifier for the customization group"
+                },
+                "custom_name": {
+                    "type": ["str"],
+                    "description": "Name of the customization group (e.g., 'Size', 'Toppings')"
+                },
+                "options": {
+                    "type": ["list"],
+                    "description": "Array of specific options within this customization group",
+                    "items": {
+                        "_id": {
+                            "type": ["ObjectId"],
+                            "description": "Unique identifier for the option"
+                        },
+                        "option_name": {
+                            "type": ["str"],
+                            "description": "Name of the specific option (e.g., 'Large', 'Extra Cheese')"
+                        },
+                        "price": {
+                            "type": ["int", "float"],
+                            "description": "Additional price for this customization option"
+                        }
+                    }
+                }
+            }
+        },
+        "images": {
+            "type": ["list"],
+            "description": "Array of product images",
+            "items": {
+                "url": {
+                    "type": ["str"],
+                    "description": "URL link to the product image"
+                }
+            }
+        }
+    }
+}

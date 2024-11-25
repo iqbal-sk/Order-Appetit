@@ -1,6 +1,4 @@
 import yaml
-from google.cloud.bigquery.magics import context
-from qdrant_client.http import model
 
 
 def load_configs():
@@ -17,4 +15,12 @@ def load_configs():
 
     return agents_config, tasks_config
 
+def load_schema_config():
+
+    with open('config/schema.yaml', 'r') as f:
+        schema_config = yaml.safe_load(f)
+
+    return schema_config
+
 agents_config, tasks_config = load_configs()
+schema_config = load_schema_config()

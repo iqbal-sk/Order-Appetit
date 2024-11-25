@@ -1,1 +1,51 @@
-{"collection_name": "locations", "fields": {"_id": ["ObjectId"], "tax_percentage": ["float"], "isDefault": ["bool"], "shipday_key": ["str"], "background_name": ["str"], "name": ["str"], "polygons": ["dict"], "polygons.type": ["str"], "polygons.coordinates": ["list"], "polygons.coordinates[]": ["list"], "createdAt": ["datetime"], "updatedAt": ["datetime"], "__v": ["int"]}}
+{
+    "collection_name": "locations",
+    "fields": {
+        "_id": {
+            "type": ["ObjectId"],
+            "description": "Unique identifier for the location"
+        },
+        "name": {
+            "type": ["str"],
+            "description": "Name of the service location or delivery zone"
+        },
+        "tax_percentage": {
+            "type": ["float"],
+            "description": "Tax rate applicable in this location"
+        },
+        "isDefault": {
+            "type": ["bool"],
+            "description": "Flag indicating if this is the default service location"
+        },
+        "polygons": {
+            "type": ["dict"],
+            "description": "GeoJSON object defining the service area boundaries",
+            "items": {
+                "type": {
+                    "type": ["str"],
+                    "description": "GeoJSON type (e.g., 'Polygon', 'MultiPolygon')"
+                },
+                "coordinates": {
+                    "type": ["list"],
+                    "description": "Array of coordinate arrays defining the polygon boundaries",
+                    "items": {
+                        "type": ["list"],
+                        "description": "Geographic coordinates defining polygon vertices"
+                    }
+                }
+            }
+        },
+        "shipday_key": {
+            "type": ["str"],
+            "description": "Integration key for shipday delivery service"
+        },
+        "createdAt": {
+            "type": ["datetime"],
+            "description": "Timestamp when location was created"
+        },
+        "updatedAt": {
+            "type": ["datetime"],
+            "description": "Timestamp of last update to location"
+        }
+    }
+}
