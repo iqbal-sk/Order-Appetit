@@ -255,7 +255,7 @@ def render_sidebar():
     sorted_threads = sorted(st.session_state.chat_history.items(), key=lambda x: float(x[0]), reverse=True)
     for thread_id, thread in sorted_threads:
         try:
-            first_message = thread[0]["content"] if thread else "No messages yet"
+            first_message = thread['messages'][0]["content"] if thread else "No messages yet"
             first_message = truncate_message(first_message)
         except (IndexError, KeyError, TypeError):
             first_message = "No messages yet"
