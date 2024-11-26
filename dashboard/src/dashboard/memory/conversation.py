@@ -1,6 +1,6 @@
 from crewai.tasks.task_output import TaskOutput
 from collections import deque
-
+import json
 from typing import Any
 from pydantic_core import CoreSchema, core_schema
 
@@ -34,3 +34,16 @@ class ConversationBufferWindow:
                 ])
             )
         )
+
+    def to_json(self):
+        return json.dumps({
+            "window_size": self.window_size,
+            "buffer": list(self.buffer)
+        })
+
+    @classmethod
+    def from_dict(cls, dictionary: dict) -> "ConversationBufferWindow":
+        data = dictionary
+        instance = cls(window_size=data["window_size"])
+        instance.buffer = deque(data["buffer"], maxlen=instance.window_size)
+        return instance
