@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def create_agents(callback_handler, parent_container, placeholder):
+def create_agents(callback_handler, placeholder):
     llm = ChatOpenAI(model='gpt-4o-mini', temperature=0, max_tokens=16384)
 
     schema_analyzer = Agent(
@@ -26,7 +26,7 @@ def create_agents(callback_handler, parent_container, placeholder):
         tools=[analyze_local_schema, filter_items],
         llm=llm,
         cache=True,
-        step_callback=callback_handler('Schema Analyzer', parent_container, placeholder)
+        step_callback=callback_handler('Schema Analyzer', placeholder)
     )
 
     query_builder = Agent(
@@ -36,7 +36,7 @@ def create_agents(callback_handler, parent_container, placeholder):
         verbose=True,
         allow_delegation=False,
         llm=llm,
-        step_callback=callback_handler('Query Builder', parent_container, placeholder)
+        step_callback=callback_handler('Query Builder', placeholder)
     )
 
     data_analyst = Agent(
@@ -47,15 +47,15 @@ def create_agents(callback_handler, parent_container, placeholder):
         allow_delegation=False,
         tools=[execute_python_code],
         llm=llm,
-        step_callback=callback_handler('Data Analyst', parent_container, placeholder),
+        step_callback=callback_handler('Data Analyst', placeholder),
         max_retries=3
     )
 
     return [schema_analyzer, query_builder, data_analyst]
 
 
-def create_tasks(agents, parent_container, placeholder, memory):
-    callback = TaskProgressCallback(parent_container, placeholder, memory)
+def create_tasks(agents, placeholder, memory):
+    callback = TaskProgressCallback(placeholder, memory)
 
     schema_analysis_task = Task(
         description=tasks_config['schema_analysis_task']['description'],
@@ -84,8 +84,8 @@ def create_tasks(agents, parent_container, placeholder, memory):
     return [schema_analysis_task, query_building_task, data_analysis_task]
 
 
-def create_conversational_agent(callback_handler, parent_container, placeholder):
-    llm = ChatOpenAI(model='gpt-4o-mini', temperature=0.7)
+def create_conversational_agent(callback_handler, placeholder):
+    llm = ChatOpenAI(model='gpt-4o-mini', temperature=0.0)
 
     conversational_agent = Agent(
         role="Conversational AI Assistant",
@@ -94,18 +94,18 @@ def create_conversational_agent(callback_handler, parent_container, placeholder)
         verbose=True,
         allow_delegation=False,
         llm=llm,
-        step_callback=callback_handler('Conversational Agent', parent_container, placeholder)
+        step_callback=callback_handler('Conversational Agent', placeholder)
     )
 
     return conversational_agent
 
 
-def create_conversational_task(agent, parent_container, memory):
+def create_conversational_task(agent, memory):
     return Task(
         description="Engage in a conversation with the user, Consider {conversation_history}",
         expected_output="A natural response to user input",
         agent=agent,
-        callback=TaskProgressCallback(parent_container, st.empty(), memory)
+        callback=TaskProgressCallback(st.empty(), memory)
     )
 
 
