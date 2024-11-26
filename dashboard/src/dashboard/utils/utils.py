@@ -63,7 +63,7 @@ def extract_last_meaningful_query(conversation_history):
                 {"role": "user", "content": prompt}
             ],
             max_tokens=16384,
-            temperature=0.3
+            temperature=0.0
         )
 
         extracted_query = response.choices[0].message.content.strip()
