@@ -15,11 +15,23 @@ class TaskProgressCallback:
     def __call__(self, task_output: TaskOutput):
         task_name = task_output.name if task_output.name else ''
         summary = summarize_task(task_name + ': ' + task_output.summary)
-        self.message = f"{task_output.agent}: {summary}"
+        self.message = f"{summary}"
         self.memory.add_task_output(task_output)
         self._update_display()
 
     def _update_display(self):
         self.placeholder.empty()
-        with self.placeholder:
-            st.write(self.message)
+        with st.session_state.message_container:
+            with self.placeholder:
+                st.markdown(
+                    f"""
+                            <div style="
+                                display: flex;
+                                padding-left: 20%;
+                                padding-right: 10%;
+                            ">
+                                {self.message}
+                            </div>
+                            """,
+                    unsafe_allow_html=True
+                )

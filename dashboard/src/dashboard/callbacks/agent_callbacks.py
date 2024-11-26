@@ -15,7 +15,7 @@ class AgentProgressCallback:
         message = ''
         if hasattr(step_output, 'tool'):
             if hasattr(step_output, 'thought') and len(step_output.thought) > 0:
-                message += f'\n{self.agent}💭: {summarize_text(step_output.thought)}'
+                message += f'\n{summarize_text(step_output.thought)}'
         else:
             message = f'🤔 Thought: {str(step_output)}'
         self.messages.append(message)
@@ -23,5 +23,17 @@ class AgentProgressCallback:
 
     def _update_display(self):
         self.placeholder.empty()
-        with self.placeholder:
-            st.write(self.messages[-1])
+        with st.session_state.message_container:
+            with self.placeholder:
+                st.markdown(
+                    f"""
+                    <div style="
+                        display: flex;
+                        padding-left: 20%;
+                        padding-right: 10%;
+                    ">
+                        {self.messages[-1]}
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
