@@ -39,7 +39,7 @@ def execute_python_code(
 
         return {
             "status": "success",
-            "output": result.strip(),
+            "output": result.strip().replace("|", ""),
             "type": "code_execution"
         }
 

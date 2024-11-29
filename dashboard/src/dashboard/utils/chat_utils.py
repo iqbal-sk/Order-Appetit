@@ -4,7 +4,7 @@ from io import BytesIO
 import os
 from crewai import Agent, Task, Crew, Process
 import time
-
+from dashboard.src.dashboard.memory.conversation import ConversationBufferWindow
 import streamlit as st
 
 
@@ -13,6 +13,12 @@ class CustomJSONEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, (Agent, Task, Crew, Process)):
             return str(obj)
+        elif isinstance(obj, ConversationBufferWindow):
+            return {
+                "window_size": obj.window_size,
+                "buffer": list(obj.buffer)
+            }
+
         return super().default(obj)
 
 # Streamlit UI functions
@@ -51,11 +57,11 @@ def save_chat_history():
     except Exception as e:
         print(f"Error saving chat history: {e}")
 
+
 def switch_thread(thread_id):
     """Switch to a selected thread."""
     if thread_id in st.session_state.chat_history:
         st.session_state.current_thread = thread_id
-        st.session_state.messages = st.session_state.chat_history[thread_id]
         st.session_state.show_placeholder = False
     else:
         st.error("Thread not found.")
@@ -83,9 +89,9 @@ def delete_thread(thread_id):
 
         # Clear the warning message
         warning_container.empty()
+        return
 
-
-    elif thread_id in st.session_state.chat_history:
+    if thread_id in st.session_state.chat_history:
         del st.session_state.chat_history[thread_id]
         save_chat_history()
 
@@ -96,7 +102,9 @@ def create_new_thread():
     new_thread_id = generate_unique_thread_id()
     st.session_state.current_thread = new_thread_id
     st.session_state.messages = []
-    st.session_state.chat_history[new_thread_id] = []
+    st.session_state.chat_history[new_thread_id] = {}
+    st.session_state.chat_history[new_thread_id]['messages'] = []
+    st.session_state.chat_history[new_thread_id]['conversation'] = ConversationBufferWindow(window_size=10)
     st.session_state.show_placeholder = True
     save_chat_history()
 

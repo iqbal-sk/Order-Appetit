@@ -1,118 +1,100 @@
-# Tasks Definitions
 schema_analysis_task:
   description: >
-    Analyze the MongoDB collections of the 'Order Appetit' application to identify the necessary collections and fields required to address the following user query:
+    Analyze the data schemas of the 'Order Appetit' application to identify necessary collections and fields required to address the following user query:
 
     "{user_query}"
 
-
     **Context:**
-    - 'Order Appetit' is a local food delivery app in Buffalo.
-    - The associated database is named '{database_name}'.
-    - Available collections are:
-      {collection_names}
-    - **MongoDB URI**: {mongodb_uri}
-
+    **Context:**
+        - 'Order Appetit' is a local food delivery app in Buffalo.
+        - The associated database is named '{database_name}'.
+        - Available collections are:
+          {collection_names}
+    
+    **Objective:**
+        - Identify necessary collections and fields to address the user query, focusing on specified metrics.
+        - Provide all naming variations for queried food items (If query is about food items).
+        - Prepare a schema mapping that will be used to construct consistent and comprehensive queries.
+    
     **Instructions:**
     1. **Identify Relevant Collections and Fields**:
-       - From the provided list, determine which collections and fields are necessary to answer the user query.
-       - Understand the query and get the relevant collections
-       - Justify your selection based on their relevance to the query components.
+       - From the provided schemas, determine which collections and fields are necessary to answer the user query.
+       - Justify your selection based on their relevance to the query components. If required think again to determine
+         necessary fields to answer the user query.
+    
+    Note: Please note that orders.total_amount is "the total amount on entire order", but not about any specific item in order, 
+    for total amount on a single item, you can find that information from "orders.details[].total_amount"
        
-    2. **Connect to MongoDB**:
-       - Use the provided MongoDB URI and database name to establish a connection.
+    2. **Perform Schema Analysis**:
+       - Analyze the schemas of the relevant collections to understand their structure and data types.
+       - Identify the data type of each field and its parent field (if applicable).
 
-    3. **Perform Schema Analysis**:
-       - Analyze the schemas of the relevant collections to understand the structure and data types.
-       - Focus on fields that store product names, restaurant names, user names, and quantity (`qty`) fields.
-
-    4. **Map Query Components**:
+    3. **Map Query Components**:
        - Break down the user query into key components (e.g., time frame, product name).
        - Map each component to the corresponding collections and fields, emphasizing names over IDs.
        
-    5. **Handle Naming Inconsistencies**:
-       - When processing a user query, check if it contains any specific food item names. If it's not about a specific product you can skip this.
-       - If a food item name is found, use "Food Items Finder" tool to identify naming inconsistencies for given food item.
-       - Use the output of "Food Items Finder" tool to analyze list of names semantically exactly equivalent to given food item in "{user_query}".
-    
+    4. **Handle Naming Inconsistencies**:
+       - When processing a user query, check if it contains any food item names.
+       - Use appropriate tool to identify naming inconsistencies for given food items (only if the query is about specific food item).
+         Otherwise don't try to find naming inconsistencies.
+       - Analyze list of names semantically equivalent to given food item in user_query.
 
-    6. **Document Findings**:
+    5. **Document Findings**:
        - Provide a detailed mapping of query components to collections and fields, emphasizing the importance of using names over IDs.
        - Include all naming variations for food items, ensuring comprehensive results.
        - Include any assumptions or considerations made during the analysis.
 
-    **Objective:**
-    - Identify the necessary collections and fields to address the user query, focusing on the specified metrics.
-    - Provide all naming variations for the queried food item.
-    - Prepare a schema mapping that will be used to construct consistent and comprehensive queries.
-
   expected_output: >
     - A list of relevant collections and fields necessary to answer the user query, with justifications.
-    - If query is about food item, provide other names to lookout while writing queries for  food item in "{user_query}"
-    - A detailed mapping of query components to collections and fields, including strategies for handling naming inconsistencies.
+    - For each relevant field, provide:
+      - Field name
+      - Data type
+      - Parent field (if applicable)
+    - If query is about a specific food item, provide other names to look out for while writing queries for food item in user query.
     - Explanations and any assumptions made during the analysis.
-
-  agent: schema_analyzer
-  context:
-    - none  # Since this is a root task
 
 query_building_task:
   description: >
-    Based on the schema mapping from the `schema_analysis_task`, generate an optimized MongoDB aggregation pipeline or query that consistently provides both total sales count (by summing up `qty` in each order) and sales value in dollars, and uses names instead of IDs, for the following user query:
+    Generate an optimized MongoDB query or aggregation pipeline to calculate total sales count and sales value in dollars, using names instead of IDs, based on the schema mapping from the `schema_analysis_task`. This should address the following user query:
 
     "{user_query}"
 
     **Context:**
-    - **Schema Mapping**: Use the output from the `schema_analysis_task`, including strategies for handling naming inconsistencies.
+    - **Schema Mapping**: Utilize the output from the `schema_analysis_task`, including strategies for handling naming inconsistencies.
     - **MongoDB URI**: {mongodb_uri}
     - **Database Name**: {database_name}
     - **Collections**: {collection_names}
+    
+    **Objective:**
+        - Create an optimized MongoDB query that includes all relevant records by addressing naming inconsistencies.
+        - Deliver Python code that outputs results as a JSON object for comprehensive analysis.
 
     **Instructions:**
-    1. **Incorporate Naming Variations**:
-      - Use the naming variations provided in the schema analysis output to handle inconsistencies in product names.
-      - Ensure the query groups results by `details.name` and matches any variations identified during the analysis.
+    1. **Utilize Schema Mapping**:
+       - Refer to the schema mapping to identify relevant collections and fields to get better idea for yourself.
+       - Incorporate naming variations from the schema analysis (as it is, without any changes) to handle inconsistencies in product names.
 
-    2. **Review Schema Mapping**:
-      - Focus on the necessary collections and fields, including names, monetary values, and quantities (`qty`).
-      - Use the `details.name` and `details.total_amount` fields to perform the aggregations.
-    
-    3. **Construct the Query**:
-      - Use the mapping to build a MongoDB query or aggregation pipeline that retrieves the required data.
-      - Implement the strategies for handling naming inconsistencies (e.g., using only the names identified by the `schema_analysis_task`).
-      - If the query is related to top, least or high etc., then consider the 10 values or else consider the number which is mentioned in the query
-      - Ensure the query calculates:
-      - **Total Sales Count**: Sum of the `qty` field across relevant orders.
-      - **Sales Value in Dollars**: Aggregation of the price fields.
-      - ** Ensure the mathematical intuitions and build a pipeline  
-      - Include names (e.g., product names, restaurant names) in the results instead of IDs.
+    2. **Construct the Query**:
+       - Build a MongoDB aggregation pipeline using proper MongoDB syntax and operators.
+       - Properly implement variable handling in the pipeline.
+       - Use `unwind` if necessary for array fields to ensure accurate calculations.
+       - For name matching, use case-insensitive comparison by converting both the field value and the reference value to
+         lowercase using the `$toLower` operator. 
+       - Include names (e.g., product names, restaurant names) in the results instead of IDs.
 
-    4. **Optimize the Query**:
-       - Apply best practices for query optimization to handle large datasets.
-       - Ensure efficient grouping and summing for each product name.
-    
-    5. **Handle Data Consistency**:
-       - Ensure consistent and granular outputs for each product name by incorporating all naming variations.
-    
-    6. **Provide Executable Code**:
-       - Write clean, executable Python code using PyMongo to connect to MongoDB and execute the query.
-       - Include all name variations like (`mac_n_cheese_variations`) explicitly in the code.
-       - The code must return a JSON object with **sales count and sales value for each item (name)**.
-       - Follow best coding practices, include comments, and structure the code for clarity.
+    3. **Optimize for Performance**:
+       - Apply best practices for handling large datasets efficiently.
+       - Ensure efficient grouping and summing operations.
 
-    7. **Document the Query Logic**:
-       - Explain how the query addresses the user query by handling naming inconsistencies and grouping data for each product.
-       - Include any assumptions or considerations made during the query's construction.
-     
-    **Objective:**
-    - Produce an optimized MongoDB query that accounts for naming inconsistencies, ensuring all relevant records are included.
-    - Provide code that returns results as a JSON object for consistent and comprehensive analysis.
+    4. **Implement in Python**:
+       - Write executable Python code using PyMongo to connect to MongoDB and execute the query.
+       - Ensure the code returns results as a JSON object with sales count and sales value per item name.
+
 
   expected_output: >
-    You MUST Return a JSON object containing the following fields:
+    You MUST return a JSON object containing:
     - python_code: Executable code that connects to MongoDB and runs the optimized query, returning results as a JSON object.
-    - query_output_structure: Description of the expected output format, including fields and data types, ensuring granularity (per item).
-    - query_explanation: Detailed explanation of the query logic, including how it groups data and calculates total sales count and sales value for each product name.
+    - query_output_structure: Description of the expected output format, including fields and data types.
 
   agent: query_builder
   context:
@@ -122,27 +104,27 @@ data_analysis_task:
   description: >
     Execute the MongoDB query generated in the `query_building_task` and present the output in a granular and tabular format, ensuring consistency and use of names instead of IDs, for the following user query:
 
-    "{user_query}"
+    **User Query**: "{user_query}"
 
     **Context:**
-    - **User Query**: "{user_query}"
     - **MongoDB URI**: "{mongodb_uri}"
     - **Database Name**: "{database_name}"
     - **Query Code**: Use the Python code from the `query_building_task`.
     - **Schema Mapping**: Refer to outputs from the `schema_analysis_task`.
 
     **Objective:**
+    - Analyze the provided code if it's correct, if not please modify it accordingly.
     - Execute the MongoDB query and return the results in a detailed, granular, and tabular format.
     - Ensure all relevant records are included, using names instead of IDs.
 
     **Instructions:**
     1. **Execute the Query**:
-       - Format the provided Python code correctly.
+       - Correct and format the provided Python code correctly.
        - Pass any necessary arguments to the Code Execution Tool.
        - Run the Python code to execute the query and capture the JSON output.
 
-    2. **Parse JSON Results**:
-       - Load the JSON output into a structured format (e.g., a pandas DataFrame).
+    2. **Understand JSON Results**:
+       - Transform JSON output into a structured format
        - Verify the data for completeness and correctness.
 
     3. **Format the Results**:
@@ -153,8 +135,11 @@ data_analysis_task:
     4. **Output Presentation**:
        - Display the tabular results clearly, ensuring they are sorted appropriately if needed.
        - Avoid any additional analysis or interpretation—focus solely on presenting the data.
+   
+    
 
   expected_output: >
+    - If you didn't get appropriate output from tool, provide apology message but don't hallucinate stuff.
     - A detailed, granular table of query results with fields like names, quantities, and sales values.
     - Results must use names (not IDs) and align with schema mapping outputs.
     - Include clear column headers and consistent formatting.

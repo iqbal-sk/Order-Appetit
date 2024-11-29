@@ -1,7 +1,7 @@
 import os
 import streamlit as st
-import streamlit.components.v1 as components
 
+from dashboard.src.dashboard.memory.conversation import ConversationBufferWindow
 from dashboard.src.dashboard.utils.chat_utils import generate_unique_thread_id, save_chat_history
 
 # Create the custom JavaScript component
@@ -39,57 +39,76 @@ document.addEventListener('DOMContentLoaded', function() {
 def render_chat_messages():
     if st.session_state.current_thread is not None:
         # Render messages for the current thread
-        for msg in st.session_state.chat_history[st.session_state.current_thread]:
+        for msg in st.session_state.chat_history[st.session_state.current_thread]['messages']:
             role = "user" if msg["role"] == "user" else "assistant"
             with st.chat_message(role):
                 st.markdown(msg["content"])
 
-# Chat input handling
-def handle_input(prompt):
+
+def handle_flow_interaction(prompt, flow):
     if prompt:  # Using the prompt from the text_input
         st.session_state.show_placeholder = False
         if st.session_state.current_thread is None:
             st.session_state.current_thread = generate_unique_thread_id()
-            st.session_state.chat_history[st.session_state.current_thread] = []
-            st.session_state.messages = []  # Reset messages for the new thread
+            st.session_state.chat_history[st.session_state.current_thread] = {}
+            # st.session_state.memory = ConversationBufferWindow(window_size=10)
+            st.session_state.chat_history[st.session_state.current_thread]['messages'] = []
+            st.session_state.chat_history[st.session_state.current_thread]['conversation'] = ConversationBufferWindow(window_size=10)
+
+            # st.session_state.messages = []  # Reset messages for the new thread
 
         # Append user message
         user_message = {"role": "user", "content": prompt}
-        st.session_state.chat_history[st.session_state.current_thread].append(user_message)
+        st.session_state.chat_history[st.session_state.current_thread]['messages'].append(user_message)
 
         with st.chat_message("user"):
             st.markdown(prompt)
 
-        # Process input
-        result = crew.kickoff(inputs={
-            'user_query': prompt,
-            'mongodb_uri': mongodb_uri,
-            'database_name': database_name,
-            'collection_names': collection_names,
-        })
+        flow.state.conversation_history = st.session_state.chat_history[st.session_state.current_thread]['conversation']
+
+        if not isinstance(st.session_state.chat_history[st.session_state.current_thread]['conversation'], ConversationBufferWindow):
+            data = st.session_state.chat_history[st.session_state.current_thread]['conversation']
+            st.session_state.chat_history[st.session_state.current_thread]['conversation'] = ConversationBufferWindow.from_dict(data)
+
+        flow.state.conversation_history = st.session_state.chat_history[st.session_state.current_thread]['conversation']
+
+        flow.state.current_query = prompt
+        flow.kickoff()
 
         # Append assistant response
-        response = str(result)
+        response = flow.state.response
         assistant_message = {"role": "assistant", "content": response}
-        st.session_state.chat_history[st.session_state.current_thread].append(assistant_message)
+        st.session_state.chat_history[st.session_state.current_thread]['messages'].append(assistant_message)
 
         with st.chat_message("assistant"):
             st.markdown(response)
 
-        st.session_state.messages = st.session_state.chat_history[st.session_state.current_thread]
+        # st.session_state.messages = st.session_state.chat_history[st.session_state.current_thread]['messages']
         st.session_state.show_placeholder = False
         save_chat_history()
         st.session_state.text_input = ""
 
 
-def create_chat_interface(crew, mongodb_uri, database_name, collection_names):
-    # Inject custom CSS to make input and button scale equally
+
+
+def create_chat_interface(flow_class, mongodb_uri, database_name, collection_names):
     chat_container = st.container()
-    col1, col2, col3 = st.columns([1,4,1])
-    with col2:
+
+    col1, col2, col3 = st.columns([1, 4, 1])
+    st.session_state.message_container = col2
+
+    # print(st.session_state.message_container)
+
+    flow = flow_class()
+
+
+    with st.session_state.message_container:
         prompt = st.chat_input("What is up?")
         if prompt:
-            handle_input(prompt)  # Pass prompt as argument
+            # handle_input(prompt, crew, mongodb_uri=mongodb_uri,
+            #              database_name=database_name,
+            #              collection_names=collection_names)  # Pass prompt as argument
+            handle_flow_interaction(prompt, flow)
 
     # display messages or placeholder
     with chat_container:
