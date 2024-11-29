@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  dashboard:
+    ports:
+      - "8501:8501"
+    environment:
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+      - STREAMLIT_SERVER_PORT=8501
+      - PYTHONAPP=/app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./config:/app/config
+      - ./schemas:/app/schemas
+      - ./images:/app/images
+      - ./db:/app/db
+    restart: unless-stopped
