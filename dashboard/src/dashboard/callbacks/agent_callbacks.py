@@ -29,7 +29,7 @@ class AgentProgressCallback:
                     f"""
                     <div style="
                         display: flex;
-                        padding-left: 20%;
+                        padding-left: 10%;
                         padding-right: 10%;
                     ">
                         {self.messages[-1]}

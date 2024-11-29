@@ -94,7 +94,7 @@ def handle_flow_interaction(prompt, flow):
 def create_chat_interface(flow_class, mongodb_uri, database_name, collection_names):
     chat_container = st.container()
 
-    col1, col2, col3 = st.columns([1, 4, 1])
+    col1, col2, col3 = st.columns([1, 20, 1])
     st.session_state.message_container = col2
 
     # print(st.session_state.message_container)

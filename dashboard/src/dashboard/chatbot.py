@@ -94,7 +94,7 @@ crew = Crew(
 
 
 # Streamlit app
-st.set_page_config(page_title="AppetiQ", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="AppetiQ", layout="centered", initial_sidebar_state="collapsed")
  # for center screen
 # st.markdown("""
 #     <style>

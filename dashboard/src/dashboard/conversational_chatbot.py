@@ -134,7 +134,7 @@ def handle_interaction(flow, prompt, memory):
 
 def main():
 
-    st.set_page_config(page_title="AppetiQ", layout="wide", initial_sidebar_state="collapsed")
+    st.set_page_config(page_title="AppetiQ", layout="centered", initial_sidebar_state="collapsed")
 
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = load_chat_history()
