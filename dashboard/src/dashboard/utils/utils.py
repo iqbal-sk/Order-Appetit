@@ -38,13 +38,14 @@ def extract_last_meaningful_query(conversation_history, user_query):
     # Prepare the conversation history for the OpenAI model
 
     prompt = f"""
-    If current query has no relevance to the previous conversation, then don't make any assumptions based on previous current history
     Given a conversation about data analysis, transform user query by:
     
     1. Context Understanding:
         - Previous analysis context: {conversation_history}
         - Current question: {user_query}
         - Related metrics mentioned earlier
+        
+    If current query has no relevance to the previous conversation, then don't make any assumptions based on previous current history
     
     2. Query Enhancement:
         - If query is conversational, simply return No meaningful query found
