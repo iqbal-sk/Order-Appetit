@@ -34,25 +34,34 @@ def summarize_task(task):
     return response.choices[0].message.content.strip()
 
 
-def extract_last_meaningful_query(conversation_history):
+def extract_last_meaningful_query(conversation_history, user_query):
     # Prepare the conversation history for the OpenAI model
 
-
     prompt = f"""
-                Given the following conversation history, 
-                1. First Identify whether the most recent user request is normal conversational user prompt or not, if yes simply return No meaningful query found
-                
-                If most recent user request is about unresolved query or inaccurate query results then 
-                identify and extract the meaningful user query about retrieving
-                data from a database (about sales) with having detailed query about something over database. Ignore messages having
-                "retry", "try again" or something similar to them. If user provides with few suggestions on what to do, then mention them as well in query.
-                If no meaningful query was found,
-                the model might return "No meaningful query found"
+    If current query has no relevance to the previous conversation, then don't make any assumptions based on previous current history
+    Given a conversation about data analysis, transform user query by:
+    
+    1. Context Understanding:
+        - Previous analysis context: {conversation_history}
+        - Current question: {user_query}
+        - Related metrics mentioned earlier
+    
+    2. Query Enhancement:
+        - If query is conversational, simply return No meaningful query found
+        - Extract specific KPIs and metrics needed
+        - Identify time periods and frequencies
+        - Determine required data dimensions
+        - Add business context
+    
+    3. Generate Analysis Request:
+    "Based on our discussion about Previous analysis context, please analyze:
+    - Primary metrics: [specific metrics]
+    - Time period: [specified timeframe] (If no time specified, consider it as "till now"
+    - Analysis goal: [business objective]
+    - Additional context: [relevant background]"
+    """
 
-                Conversation history:
-                {conversation_history}
-
-                Most recent meaningful query:"""
+    print(prompt)
 
     try:
         response = openai_llm.chat.completions.create(

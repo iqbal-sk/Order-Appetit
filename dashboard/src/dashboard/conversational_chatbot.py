@@ -76,7 +76,7 @@ class ChatbotFlow(Flow[ChatState]):
         print(f"Processing input: {self.state.current_query}")
 
 
-        last_query = extract_last_meaningful_query(self.state.conversation_history.get_conversation_string())
+        last_query = extract_last_meaningful_query(self.state.conversation_history.get_conversation_string(), self.state.current_query)
 
         print(last_query)
 
@@ -85,7 +85,7 @@ class ChatbotFlow(Flow[ChatState]):
 
         self.state.conversation_history.add_message("User", self.state.current_query)
 
-        print('current query will be', self.state.current_query)
+        # print('current query will be', self.state.current_query)
 
         self.state.is_task_specific = determine_if_task_specific_llm(self.state.current_query)
 
