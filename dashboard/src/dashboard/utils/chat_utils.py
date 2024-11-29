@@ -51,7 +51,6 @@ def save_chat_history():
     except Exception as e:
         print(f"Error saving chat history: {e}")
 
-
 def switch_thread(thread_id):
     """Switch to a selected thread."""
     if thread_id in st.session_state.chat_history:
@@ -76,14 +75,15 @@ def delete_thread(thread_id):
                 </p>
             </div>
             """,
-            unsafe_allow_html=True
-        )
+                unsafe_allow_html=True
+                                   )
 
         # Wait for 3 seconds
         time.sleep(2)
 
         # Clear the warning message
         warning_container.empty()
+
 
     elif thread_id in st.session_state.chat_history:
         del st.session_state.chat_history[thread_id]

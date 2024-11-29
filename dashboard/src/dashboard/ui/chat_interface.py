@@ -45,7 +45,7 @@ def render_chat_messages():
                 st.markdown(msg["content"])
 
 # Chat input handling
-def handle_input(prompt, crew, **kwargs):
+def handle_input(prompt):
     if prompt:  # Using the prompt from the text_input
         st.session_state.show_placeholder = False
         if st.session_state.current_thread is None:
@@ -63,9 +63,9 @@ def handle_input(prompt, crew, **kwargs):
         # Process input
         result = crew.kickoff(inputs={
             'user_query': prompt,
-            'mongodb_uri': kwargs['mongodb_uri'],
-            'database_name': kwargs['database_name'],
-            'collection_names': kwargs['collection_names'],
+            'mongodb_uri': mongodb_uri,
+            'database_name': database_name,
+            'collection_names': collection_names,
         })
 
         # Append assistant response
@@ -83,15 +83,13 @@ def handle_input(prompt, crew, **kwargs):
 
 
 def create_chat_interface(crew, mongodb_uri, database_name, collection_names):
+    # Inject custom CSS to make input and button scale equally
     chat_container = st.container()
-
-    col1, col2, col3 = st.columns([1, 4, 1])
+    col1, col2, col3 = st.columns([1,4,1])
     with col2:
         prompt = st.chat_input("What is up?")
         if prompt:
-            handle_input(prompt, crew, mongodb_uri=mongodb_uri,
-                         database_name=database_name,
-                         collection_names=collection_names)  # Pass prompt as argument
+            handle_input(prompt)  # Pass prompt as argument
 
     # display messages or placeholder
     with chat_container:
@@ -112,7 +110,7 @@ def create_chat_interface(crew, mongodb_uri, database_name, collection_names):
 
                 .subheader {
                     position: fixed; /* Ensure it can be positioned */
-                    top: 200px;
+                    top: 180px;
                     left: 50%;
                     transform: translateX(-50%);
                     text-align: center;
@@ -122,14 +120,14 @@ def create_chat_interface(crew, mongodb_uri, database_name, collection_names):
                 /* Feature container */
                 .feature-container {
                     position: fixed; /* Fix relative to viewport */
-                    bottom: 120px; /* Space from the bottom of the viewport */
+                    bottom: 100px; /* Space from the bottom of the viewport */
                     left: 50%; /* Center horizontally */
                     transform: translateX(-50%); /* Ensure exact centering */
                     display: flex; /* Flex layout for child elements */
                     justify-content: space-between; /* Space between child elements */
-                    gap: 20px; /* Add space between feature boxes */
-                    width: 100%; /* Adjust width for responsiveness */
-                    max-width: 800px; /* Optional: prevent too wide a container */
+                    gap: 10px; /* Add space between feature boxes */
+                    width: 90%; /* Adjust width for responsiveness */
+                    max-width: 700px; /* Optional: prevent too wide a container */
                     background-color: transparent; /* Light background for visibility */
                     padding: 20px; /* Padding inside the container */
                     border-radius: 12px; /* Rounded corners */
@@ -139,18 +137,18 @@ def create_chat_interface(crew, mongodb_uri, database_name, collection_names):
                 /* Feature box */
                 .feature-box {
                     background-color: rgba(255, 255, 255, 0.05); /* Background for each feature box */
-                    border-radius: 10px; /* Rounded corners */
+                    border-radius: 15px; /* Rounded corners */
                     padding: 20px;
-                    flex: 1; /* Equal width for all boxes */
+                    flex: 2; /* Equal width for all boxes */
                     text-align: center; /* Center text inside each box */
                     color: white; /* Ensure text color contrasts with the background */
                     height: auto; /* Allows box to grow with content */
-                    max-height: 100%; /* Takes full height of container */
+                    max-height: 50%; /* Takes full height of container */
                 }
                 .feature-box h3 {
                     color: white;
-                    font-size: 1.25rem;
-                    margin-bottom: 1.5rem;
+                    font-size: 1rem;
+                    margin-bottom: 0.5rem;
                     font-weight: 500;
                     text-align: center;
                 }
@@ -163,8 +161,8 @@ def create_chat_interface(crew, mongodb_uri, database_name, collection_names):
 
                 .feature-item {
                     background-color: rgba(255, 255, 255, 0.05);
-                    padding: 12px 16px;
-                    margin: 8px 0;
+                    padding: 8px 12px;
+                    margin: 4px 0;
                     border-radius: 8px;
                     color: #B8B9BC;
                     font-size: 0.8rem;
@@ -174,7 +172,7 @@ def create_chat_interface(crew, mongodb_uri, database_name, collection_names):
 
             # Main header and subheader
             # Main header and subheader
-            st.markdown("<h1 class='main-header'>AppetiQ</h1>", unsafe_allow_html=True)
+            st.markdown("<h3 class='main-header'>AppetiQ</h3>", unsafe_allow_html=True)
             st.markdown(
                 "<p class='subheader'>Explore Trends, Sales and Item performance interactively with insights from Order Appetit data.</p>",
                 unsafe_allow_html=True)
@@ -186,150 +184,23 @@ def create_chat_interface(crew, mongodb_uri, database_name, collection_names):
                         <h3>Examples</h3>
                         <div class="feature-item">What are the sales of mac n cheese for last 7 months?</div>
                         <div class="feature-item">Give sales of biryani till now.</div>
-                        <div class="feature-item"></div>
-                        <div class="feature-item">Explain how to manage money with $3000/month salary</div>
+                        <div class="feature-item">which month has the highest sales of pasta</div>
+                        <div class="feature-item">Give the top 10 restaurants in sales for last 12months</div>
                     </div>
                     <div class="feature-box">
                         <h3>Capabilities</h3>
                         <div class="feature-item">Provide information and answer questions</div>
-                        <div class="feature-item">Programmed to reject inappropriate solicitations</div>
+                        <div class="feature-item">Handle both database-related and general queries efficiently.</div>
                         <div class="feature-item">Retains previous user inputs during ongoing conversations</div>
-                        <div class="feature-item">Grammar and language correction</div>
+                        <div class="feature-item">Displays sales data in tables.</div>
                     </div>
                     <div class="feature-box">
                         <h3>Limitations</h3>
-                        <div class="feature-item">May sometimes produce inaccurate or erroneous data</div>
-                        <div class="feature-item">Sometimes it can create harmful or biased content</div>
-                        <div class="feature-item">Limited awareness of post-2021 world events</div>
-                        <div class="feature-item">Potential for biased or inappropriate responses</div>
-                    </div>
+                        <div class="feature-item">Does not support graphs or visualizations.</div>
+                        <div class="feature-item">Requires enhancement in handling follow-up queries.</div>
+                        <div class="feature-item">Needs performance improvement to handle diverse queries effectively.</div>
+
                 </div>
             """, unsafe_allow_html=True)
         else:
             pass
-
-# def create_chat_interface(crew, mongodb_uri, database_name, collection_names):
-#
-#     components.html(js_code, height=0)
-#     col1, col2, col3 = st.columns([1, 4, 1])
-#     with col2:
-#         prompt = st.text_input("", placeholder="Ask anything...", key="chat_input")
-#         if prompt:
-#             handle_input(prompt, crew, mongodb_uri=mongodb_uri,
-#                          database_name=database_name,
-#                          collection_names=collection_names)  # Pass prompt as argument
-#
-#     # display messages or placeholder
-#
-#     if not st.markdown(prompt) or st.session_state.show_placeholder:
-#         st.markdown("""
-#             <style>
-#             .main-header {
-#                 position: fixed; /* Ensure it can be positioned */
-#                 font-family: 'Radley', serif !important;
-#                 font-size: 3.5rem !important;
-#                 top: 100px;
-#                 left: 50%;
-#                 transform: translateX(-50%);
-#                 text-align: center;
-#                 z-index: 10;
-#             }
-#
-#             .subheader {
-#                 position: fixed; /* Ensure it can be positioned */
-#                 top: 200px;
-#                 left: 50%;
-#                 transform: translateX(-50%);
-#                 text-align: center;
-#                 z-index: 10;
-#             }
-#
-#             /* Feature container */
-#             .feature-container {
-#                 position: fixed; /* Fix relative to viewport */
-#                 bottom: 120px; /* Space from the bottom of the viewport */
-#                 left: 50%; /* Center horizontally */
-#                 transform: translateX(-50%); /* Ensure exact centering */
-#                 display: flex; /* Flex layout for child elements */
-#                 justify-content: space-between; /* Space between child elements */
-#                 gap: 20px; /* Add space between feature boxes */
-#                 width: 100%; /* Adjust width for responsiveness */
-#                 max-width: 800px; /* Optional: prevent too wide a container */
-#                 background-color: transparent; /* Light background for visibility */
-#                 padding: 20px; /* Padding inside the container */
-#                 border-radius: 12px; /* Rounded corners */
-#                 z-index: 9999; /* Ensure it's above other elements */
-#             }
-#
-#             /* Feature box */
-#             .feature-box {
-#                 background-color: rgba(255, 255, 255, 0.05); /* Background for each feature box */
-#                 border-radius: 10px; /* Rounded corners */
-#                 padding: 20px;
-#                 flex: 1; /* Equal width for all boxes */
-#                 text-align: center; /* Center text inside each box */
-#                 color: white; /* Ensure text color contrasts with the background */
-#                 height: auto; /* Allows box to grow with content */
-#                 max-height: 100%; /* Takes full height of container */
-#             }
-#             .feature-box h3 {
-#                 color: white;
-#                 font-size: 1.25rem;
-#                 margin-bottom: 1.5rem;
-#                 font-weight: 500;
-#                 text-align: center;
-#             }
-#             .feature-content {
-#                 display: flex;
-#                 flex-direction: column;
-#                 gap: 12px;
-#                 flex-grow: 1; /* Allows content to expand */
-#             }
-#
-#             .feature-item {
-#                 background-color: rgba(255, 255, 255, 0.05);
-#                 padding: 12px 16px;
-#                 margin: 8px 0;
-#                 border-radius: 8px;
-#                 color: #B8B9BC;
-#                 font-size: 0.8rem;
-#             }
-#             </style>
-#             """, unsafe_allow_html=True)
-#
-#         # Main header and subheader
-#         # Main header and subheader
-#         st.markdown("<h1 class='main-header'>AppetiQ</h1>", unsafe_allow_html=True)
-#         st.markdown(
-#             "<p class='subheader'>Explore Trends, Sales and Item performance interactively with insights from Order Appetit data.</p>",
-#             unsafe_allow_html=True)
-#
-#         # Feature boxes with styled items
-#         st.markdown("""
-#             <div class="feature-container">
-#                 <div class="feature-box">
-#                     <h3>Examples</h3>
-#                     <div class="feature-item">What are the sales of mac n cheese for last 7 months?</div>
-#                     <div class="feature-item">Give sales of biryani till now.</div>
-#                     <div class="feature-item"></div>
-#                     <div class="feature-item">Explain how to manage money with $3000/month salary</div>
-#                 </div>
-#                 <div class="feature-box">
-#                     <h3>Capabilities</h3>
-#                     <div class="feature-item">Provide information and answer questions</div>
-#                     <div class="feature-item">Programmed to reject inappropriate solicitations</div>
-#                     <div class="feature-item">Retains previous user inputs during ongoing conversations</div>
-#                     <div class="feature-item">Grammar and language correction</div>
-#                 </div>
-#                 <div class="feature-box">
-#                     <h3>Limitations</h3>
-#                     <div class="feature-item">May sometimes produce inaccurate or erroneous data</div>
-#                     <div class="feature-item">Sometimes it can create harmful or biased content</div>
-#                     <div class="feature-item">Limited awareness of post-2021 world events</div>
-#                     <div class="feature-item">Potential for biased or inappropriate responses</div>
-#                 </div>
-#             </div>
-#         """, unsafe_allow_html=True)
-#     else:
-#         pass
-

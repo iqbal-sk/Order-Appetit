@@ -17,9 +17,8 @@ from ui.chat_interface import create_chat_interface, render_chat_messages
 
 # Load environment variables
 load_dotenv()
-serper_key = os.getenv("SERPER_API_KEY")
-groq_key = os.getenv("GROQ_API_KEY")
 openai_key = os.getenv("OPENAI_API_KEY")
+
 
 
 # Initialize LLM
@@ -96,7 +95,7 @@ crew = Crew(
 
 # Streamlit app
 st.set_page_config(page_title="AppetiQ", layout="wide", initial_sidebar_state="collapsed")
-# for center screen
+ # for center screen
 # st.markdown("""
 #     <style>
 #     .main-header {
@@ -208,6 +207,7 @@ st.set_page_config(page_title="AppetiQ", layout="wide", initial_sidebar_state="c
 
 
 # Initialize session state
+# Initialize session state
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = load_chat_history()
 if 'current_thread' not in st.session_state:
@@ -216,6 +216,8 @@ if 'messages' not in st.session_state:
     st.session_state.messages = []
 if 'show_placeholder' not in st.session_state:
     st.session_state.show_placeholder = True
+if 'show_support' not in st.session_state:
+    st.session_state.show_support = False
 
 
 
