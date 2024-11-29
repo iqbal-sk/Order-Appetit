@@ -48,7 +48,8 @@ def create_agents(callback_handler, placeholder):
         tools=[execute_python_code],
         llm=llm,
         step_callback=callback_handler('Data Analyst', placeholder),
-        max_retries=3
+        max_retries=3,
+        max_execution_time=20
     )
 
     return [schema_analyzer, query_builder, data_analyst]
@@ -94,7 +95,7 @@ def create_conversational_agent(callback_handler, placeholder):
         verbose=True,
         allow_delegation=False,
         llm=llm,
-        step_callback=callback_handler('Conversational Agent', placeholder)
+        # step_callback=callback_handler('Conversational Agent', placeholder)
     )
 
     return conversational_agent
@@ -102,10 +103,10 @@ def create_conversational_agent(callback_handler, placeholder):
 
 def create_conversational_task(agent, memory):
     return Task(
-        description="Engage in a conversation with the user, Consider {conversation_history}",
+        description="Engage in a conversation with the user, Consider {conversation_history} and current user query: {user_query}",
         expected_output="A natural response to user input",
         agent=agent,
-        callback=TaskProgressCallback(st.empty(), memory)
+        # callback=TaskProgressCallback(st.empty(), memory)
     )
 
 
