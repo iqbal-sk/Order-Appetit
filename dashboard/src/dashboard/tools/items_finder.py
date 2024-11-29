@@ -7,12 +7,12 @@ from pinecone import Pinecone
 
 
 @tool("Food Items Finder")
-def filter_items(item_name: str) -> str:
+def filter_items(food_item_name: str) -> str:
     """
     Find food names semantically equivalent to the food name in user query
 
     Args:
-        item_name (str): food name from user query.
+        food_item_name (str): food name from user query.
 
     Returns:
         str: string containing food names semantically equivalent to provided item_name.
@@ -33,7 +33,7 @@ def filter_items(item_name: str) -> str:
         model = SentenceTransformer('sentence-transformers/all-MiniLM-L12-v2').to(device)
 
 
-        item_embedding =  model.encode(item_name, convert_to_tensor=True).cpu().numpy().tolist()
+        item_embedding =  model.encode(food_item_name, convert_to_tensor=True).cpu().numpy().tolist()
 
 
         query_response = index.query(
