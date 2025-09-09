@@ -1,5 +1,7 @@
 # AppetiQ — Order Appetit Analytics Chatbot (Prototype)
 
+![AppetiQ Social Preview](dashboard/src/dashboard/images/social-preview.jpg)
+
 An AI-powered analytics assistant that lets business users ask questions about Order Appetit’s MongoDB data in plain English and get precise, tabular insights — no SQL or BI tool required.
 
 This prototype evolved into a production-grade solution. It demonstrates end‑to‑end problem solving: multi‑agent orchestration, schema understanding, query generation, execution, and presentation in a clean Streamlit UX.
